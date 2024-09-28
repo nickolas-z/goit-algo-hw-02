@@ -1,80 +1,55 @@
-import queue
-import threading
-import time
-import random
-import sys
-import os
-
-# Створення черги для заявок
-request_queue = queue.Queue()
-
-# Лічильник для унікальних заявок
-request_counter = 0
-running = True  # Флаг для завершення програми
-
-# Отримання розміру терміналу
-terminal_size = os.get_terminal_size()
-terminal_height = terminal_size.lines
-terminal_width = terminal_size.columns
+from collections import deque
+from colorama import Style, init, Fore
+from helpers import Application, print_execution_time
 
 
-# Функція для генерації унікального номера заявки
-def generate_unique_request_id():
-    global request_counter
-    current_time_ms = int(time.time() * 1000)  # Поточний час у мілісекундах
-    request_counter += 1  # Збільшуємо лічильник
-    return f"{current_time_ms}-{request_counter}"
+class Task1(Application):
+    """
+    Application class
+    """
 
+    def is_palindrome(self, s: str) -> bool:
+        """ Перевіряє чи є рядок паліндромом """
+        # Нормалізація рядка: переведення в нижній регістр і видалення пробілів
+        normalized_str = "".join(char.lower() for char in s if char.isalnum() and char not in "-,.'!?\"")
 
-# Функція для обробки клавіш в окремому потоці
-def monitor_keys():
-    global running
-    while running:
-        if sys.stdin.read(1) == "q":  # Перевіряємо, чи натиснута клавіша 'q'
-            running = False  # Зупиняємо основний цикл
+        # Створюємо двосторонню чергу з символів рядка
+        char_deque = deque(normalized_str)
 
+        # Порівнюємо символи з початку і кінця
+        while len(char_deque) > 1:
+            if char_deque.popleft() != char_deque.pop():
+                return False
 
-# Функція для виведення тексту внизу термінала
-def print_at_bottom(message):
-    # Очищаємо екран
-    print("\033[2J", end="")
-    # Переміщуємо курсор в нижню частину екрана
-    print(f"\033[{terminal_height};0H", end="")
-    # Виводимо повідомлення
-    print(message, end="", flush=True)
+        return True
 
-
-# Стартовий код програми
-if __name__ == "__main__":
-    # Створюємо окремий потік для обробки натискань клавіш
-    key_thread = threading.Thread(target=monitor_keys, daemon=True)
-    key_thread.start()
-
-    try:
-        while running:
-            # Генеруємо нову заявку
-            unique_request_id = generate_unique_request_id()
-            request_queue.put(unique_request_id)
-            print_at_bottom(
-                f"Нова заявка: {unique_request_id} додана до черги. Зараз у черзі: {request_queue.qsize()} заявок."
+    @print_execution_time
+    def run(self):
+        init(autoreset=True)
+        print(f"{Style.BRIGHT}{Fore.CYAN}Приклади паліндромів:{Style.RESET_ALL}")
+        print(f"""{Fore.YELLOW}
+            Уму – мінімуму!
+            І розморозь зором зорі
+            Ущипне — та шатен: пищу!
+            А результатів? Вітать лузера!
+            А баба на волі — цілована баба.
+            Три психи пили Пилипихи спирт.
+                {Style.RESET_ALL}""")
+        while True:
+            user_input = input("Введіть фразу для перевірки ('q' - вихід): ")
+            if user_input in ["q", "й", "Q", "Й"]:
+                break
+            is_p=self.is_palindrome(user_input)
+            print(
+                f"Це {Style.BRIGHT}{Fore.GREEN if is_p else Fore.RED}{'паліндром' if is_p else 'не паліндром'}{Style.RESET_ALL}. Кількість символів (всього): {len(user_input)}"
             )
 
-            # Імітація часу на обробку заявок
-            time.sleep(random.uniform(0.5, 2))
 
-            # Обробка заявки, якщо черга не порожня
-            if not request_queue.empty():
-                request_id = request_queue.get()
-                print_at_bottom(
-                    f"Обробляємо заявку: {request_id}. Заявок у черзі перед обробкою: {request_queue.qsize()}."
-                )
-                time.sleep(3)  # Імітація часу на обробку заявки
-                print_at_bottom(
-                    f"Заявку {request_id} оброблено. Залишилося заявок у черзі: {request_queue.qsize()}."
-                )
-
+# Run the application
+if __name__ == "__main__":
+    try:
+        Task1("Palindrome finder!").run()
+    except EOFError:
+        print(f"\n{Fore.RED}Input ended unexpectedly. Exiting the application.")
     except KeyboardInterrupt:
-        pass
-    finally:
-        running = False
-        print("\nПрограма завершена.")
+        print(f"\n{Fore.RED}Operation cancelled (Ctrl+C). Exiting the application.")
