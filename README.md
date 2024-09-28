@@ -81,4 +81,4 @@ queue = Queue()
 ## Додатково
 - [Тема 2. Домашнє завдання до теми “Основні структури даних”](https://www.edu.goit.global/uk/learn/24858703/19646173/19646294/homework)
 - [https://github.com/nickolas-z/goit-algo-hw-02](https://github.com/nickolas-z/goit-algo-hw-02)
-- [goit-algo-hw-02-main.zip]()
+- [goit-algo-hw-02-main.zip](https://s3.eu-north-1.amazonaws.com/lms.goit.files/c6816ef4-f095-4612-b74f-625f7e4c6cd8%D0%94%D0%972_%D0%97%D1%83%D0%B1%D1%87%D0%B8%D0%BA%D0%9C%D0%B8%D0%BA%D0%BE%D0%BB%D0%B0%D0%9C%D0%B8%D0%BA%D0%BE%D0%BB%D0%B0%D0%B9%D0%BE%D0%B2%D0%B8%D1%87.zip)
